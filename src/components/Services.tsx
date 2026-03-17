@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Services = () => {
+const Services: React.FC = () => {
   return (
     <section id="services" className="py-5 bg-asphalt">
       <div className="container py-5">

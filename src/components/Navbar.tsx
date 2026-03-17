@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-const Navbar = () => {
-  const [activeSection, setActiveSection] = useState('');
-  const [collapsed, setCollapsed] = useState(true);
+const Navbar: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<string>('');
+  const [collapsed, setCollapsed] = useState<boolean>(true);
 
   useEffect(() => {
-    const sections = document.querySelectorAll('section[id]');
-    const handleScroll = () => {
+    const sections = document.querySelectorAll<HTMLElement>('section[id]');
+    const handleScroll = (): void => {
       let current = '';
       sections.forEach((section) => {
         if (window.pageYOffset >= section.offsetTop - 100) {
-          current = section.getAttribute('id');
+          current = section.getAttribute('id') ?? '';
         }
       });
       setActiveSection(current);
@@ -19,7 +19,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = () => setCollapsed(true);
+  const handleNavClick = (): void => setCollapsed(true);
 
   return (
     <nav className="navbar navbar-expand-lg custom-navbar fixed-top">

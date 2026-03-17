@@ -3,16 +3,25 @@
  * Simulates async API calls with a 2-second delay.
  */
 
+export interface BookingPayload {
+  vehicleInfo: string;
+  serviceRequired: string;
+  locationPreference: string;
+  specificRequests: string;
+}
+
+export interface BookingResult {
+  success: boolean;
+  message: string;
+  bookingId: string;
+}
+
 /**
  * Submits a booking request.
- * @param {Object} payload - The booking form data.
- * @param {string} payload.vehicleInfo - Vehicle make/model/year.
- * @param {string} payload.serviceRequired - Service type selected.
- * @param {string} payload.locationPreference - Shop or home service.
- * @param {string} payload.specificRequests - Any specific requests from the customer.
- * @returns {Promise<{success: boolean, message: string, bookingId: string}>}
+ * @param payload - The booking form data.
+ * @returns A promise resolving with the booking result.
  */
-export const submitBooking = (payload) => {
+export const submitBooking = (payload: BookingPayload): Promise<BookingResult> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       // Simulate a 90% success rate for demo purposes

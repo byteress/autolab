@@ -1,6 +1,12 @@
 import React from 'react';
 
-const galleryItems = [
+interface GalleryItem {
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+const galleryItems: GalleryItem[] = [
   {
     src: 'https://images.unsplash.com/photo-1600705591462-80ba4e851d7e?q=80&w=600&auto=format&fit=crop',
     alt: 'Headlight',
@@ -18,8 +24,8 @@ const galleryItems = [
   },
 ];
 
-const GalleryCard = ({ src, alt, caption }) => {
-  const [hovered, setHovered] = React.useState(false);
+const GalleryCard: React.FC<GalleryItem> = ({ src, alt, caption }) => {
+  const [hovered, setHovered] = React.useState<boolean>(false);
   return (
     <div className="col-md-4">
       <div className="card border-0 rounded-0 bg-transparent">
@@ -41,7 +47,7 @@ const GalleryCard = ({ src, alt, caption }) => {
   );
 };
 
-const Gallery = () => {
+const Gallery: React.FC = () => {
   return (
     <section id="work" className="py-5 bg-asphalt">
       <div className="container py-5">

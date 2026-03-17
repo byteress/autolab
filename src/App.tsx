@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar';
@@ -8,7 +9,7 @@ import Gallery from './components/Gallery';
 import BookingForm from './components/BookingForm';
 import Footer from './components/Footer';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div data-bs-spy="scroll" data-bs-target="#navbarNav">
       <Navbar />
@@ -20,6 +21,6 @@ function App() {
       <Footer />
     </div>
   );
-}
+};
 
 export default App;

@@ -1,49 +1,63 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { submitBooking } from '../api/api';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { submitBooking, BookingResult } from '../api/api';
+import type { RootState } from './store';
 
-const initialState = {
+type BookingStatus = 'idle' | 'loading' | 'success' | 'error';
+
+interface BookingState {
+  vehicleInfo: string;
+  serviceRequired: string;
+  locationPreference: string;
+  specificRequests: string;
+  status: BookingStatus;
+  message: string;
+  bookingId: string;
+}
+
+const initialState: BookingState = {
   vehicleInfo: '',
   serviceRequired: 'Headlight Retrofit',
   locationPreference: 'Shop Service (San Fernando, Pampanga)',
   specificRequests: '',
-  status: 'idle', // 'idle' | 'loading' | 'success' | 'error'
+  status: 'idle',
   message: '',
   bookingId: '',
 };
 
-export const submitBookingThunk = createAsyncThunk(
-  'booking/submit',
-  async (_, { getState, rejectWithValue }) => {
-    const { vehicleInfo, serviceRequired, locationPreference, specificRequests } =
-      getState().booking;
-    try {
-      const result = await submitBooking({
-        vehicleInfo,
-        serviceRequired,
-        locationPreference,
-        specificRequests,
-      });
-      return result;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const submitBookingThunk = createAsyncThunk<
+  BookingResult,
+  void,
+  { state: RootState; rejectValue: string }
+>('booking/submit', async (_, { getState, rejectWithValue }) => {
+  const { vehicleInfo, serviceRequired, locationPreference, specificRequests } =
+    getState().booking;
+  try {
+    const result = await submitBooking({
+      vehicleInfo,
+      serviceRequired,
+      locationPreference,
+      specificRequests,
+    });
+    return result;
+  } catch (error) {
+    return rejectWithValue((error as Error).message);
   }
-);
+});
 
 const bookingSlice = createSlice({
   name: 'booking',
   initialState,
   reducers: {
-    setVehicleInfo(state, action) {
+    setVehicleInfo(state, action: PayloadAction<string>) {
       state.vehicleInfo = action.payload;
     },
-    setServiceRequired(state, action) {
+    setServiceRequired(state, action: PayloadAction<string>) {
       state.serviceRequired = action.payload;
     },
-    setLocationPreference(state, action) {
+    setLocationPreference(state, action: PayloadAction<string>) {
       state.locationPreference = action.payload;
     },
-    setSpecificRequests(state, action) {
+    setSpecificRequests(state, action: PayloadAction<string>) {
       state.specificRequests = action.payload;
     },
     resetForm(state) {
@@ -70,7 +84,7 @@ const bookingSlice = createSlice({
       })
       .addCase(submitBookingThunk.rejected, (state, action) => {
         state.status = 'error';
-        state.message = action.payload;
+        state.message = action.payload ?? 'An unknown error occurred.';
       });
   },
 });
