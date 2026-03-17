@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Promo = () => {
+const Promo: React.FC = () => {
   return (
     <section id="promo" className="py-5" style={{ backgroundColor: '#050505' }}>
       <div className="container">

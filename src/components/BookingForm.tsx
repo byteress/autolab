@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../store/store';
 import {
   setVehicleInfo,
   setServiceRequired,
@@ -9,12 +10,12 @@ import {
   submitBookingThunk,
 } from '../store/bookingSlice';
 
-const BookingForm = () => {
-  const dispatch = useDispatch();
+const BookingForm: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { vehicleInfo, serviceRequired, locationPreference, specificRequests, status, message, bookingId } =
-    useSelector((state) => state.booking);
+    useSelector((state: RootState) => state.booking);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     dispatch(submitBookingThunk());
   };
@@ -139,7 +140,7 @@ const BookingForm = () => {
                     <label className="form-label text-uppercase fw-bold">Specific Requests</label>
                     <textarea
                       className="form-control"
-                      rows="4"
+                      rows={4}
                       placeholder="Let us know what Demon Eye color you want, or specific headunit specs..."
                       value={specificRequests}
                       onChange={(e) => dispatch(setSpecificRequests(e.target.value))}
