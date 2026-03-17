@@ -1,12 +1,13 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { submitBooking } from '../api/api';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
+import { submitBooking } from '../services/api';
+import type { BookingState, RootState } from '../types';
 
-const initialState = {
+const initialState: BookingState = {
   vehicleInfo: '',
   serviceRequired: 'Headlight Retrofit',
   locationPreference: 'Shop Service (San Fernando, Pampanga)',
   specificRequests: '',
-  status: 'idle', // 'idle' | 'loading' | 'success' | 'error'
+  status: 'idle',
   message: '',
   bookingId: '',
 };
@@ -14,8 +15,9 @@ const initialState = {
 export const submitBookingThunk = createAsyncThunk(
   'booking/submit',
   async (_, { getState, rejectWithValue }) => {
-    const { vehicleInfo, serviceRequired, locationPreference, specificRequests } =
-      getState().booking;
+    const { vehicleInfo, serviceRequired, locationPreference, specificRequests } = (
+      getState() as RootState
+    ).booking;
     try {
       const result = await submitBooking({
         vehicleInfo,
@@ -24,7 +26,8 @@ export const submitBookingThunk = createAsyncThunk(
         specificRequests,
       });
       return result;
-    } catch (error) {
+    } catch (err) {
+      const error = err as Error;
       return rejectWithValue(error.message);
     }
   }
@@ -34,16 +37,16 @@ const bookingSlice = createSlice({
   name: 'booking',
   initialState,
   reducers: {
-    setVehicleInfo(state, action) {
+    setVehicleInfo(state, action: PayloadAction<string>) {
       state.vehicleInfo = action.payload;
     },
-    setServiceRequired(state, action) {
+    setServiceRequired(state, action: PayloadAction<string>) {
       state.serviceRequired = action.payload;
     },
-    setLocationPreference(state, action) {
+    setLocationPreference(state, action: PayloadAction<string>) {
       state.locationPreference = action.payload;
     },
-    setSpecificRequests(state, action) {
+    setSpecificRequests(state, action: PayloadAction<string>) {
       state.specificRequests = action.payload;
     },
     resetForm(state) {
@@ -70,7 +73,7 @@ const bookingSlice = createSlice({
       })
       .addCase(submitBookingThunk.rejected, (state, action) => {
         state.status = 'error';
-        state.message = action.payload;
+        state.message = (action.payload as string) ?? 'An unknown error occurred.';
       });
   },
 });
